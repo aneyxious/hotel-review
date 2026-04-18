@@ -1,50 +1,93 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: N/A → 1.0.0 (首次创建)
+- 修改的原则: 无（首次从模板初始化）
+- 新增章节:
+  - 核心原则 I. 代码质量
+  - 核心原则 II. 测试标准
+  - 核心原则 III. 用户体验一致性
+  - 核心原则 IV. 性能需求
+  - 核心原则 V. 文档与可维护性
+  - 附加约束
+  - 开发工作流
+  - 治理
+- 删除的章节: 无
+- 模板同步状态:
+  - .specify/templates/constitution-template.md: ⚠️ 保持通用模板，未覆盖项目特定原则
+  - .specify/templates/plan-template.md: ✅ 已检查，Constitution Check 章节无需修改
+  - .specify/templates/spec-template.md: ✅ 已检查，User Scenarios & Testing 与原则对齐
+  - .specify/templates/tasks-template.md: ✅ 已检查，测试驱动任务结构已存在
+  - .specify/templates/checklist-template.md: ✅ 已检查，通用结构适用
+  - .specify/templates/agent-file-template.md: ✅ 已检查，Code Style 章节可由原则推导
+- 后续 TODO: 无
+-->
 
-## Core Principles
+# 酒店评论分析项目宪章
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## 核心原则
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### I. 代码质量
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+所有代码必须通过自动化静态检查方可提交；禁止引入未经评审的第三方依赖；重复代码必须通过重构消除，功能相似度超过阈值的模块必须抽象为可复用组件；代码复杂度指标（如圈复杂度）必须被量化并持续追踪，超出阈值的函数必须附带简化的重构计划。
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+**Why**: 代码质量是系统可维护性的根基。低质量代码会指数级增加变更成本和技术债务。
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+**How to apply**: 在代码审查清单中纳入 lint、format 和复杂度检查；CI 流水线失败时禁止合并。
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### II. 测试标准
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+测试覆盖率必须达到约定阈值（核心模块不低于 80%，边界情况必须覆盖）；每个用户故事必须独立可测试，即单独实现后仍可验证其功能价值；核心功能必须配备三级测试——单元测试验证内部逻辑、集成测试验证组件协作、契约测试验证接口兼容性；测试代码必须在实现代码之前编写，且首次运行时必须失败（Red-Green-Refactor 循环）。
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+**Why**: 测试是防止回归和保障重构信心的唯一有效手段。后补测试往往流于形式，无法覆盖真实场景。
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+**How to apply**: 在 /speckit.tasks 中为每个用户故事强制生成测试任务，并在实现任务前执行；PR 必须附带测试通过截图或 CI 报告。
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+### III. 用户体验一致性
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+所有用户界面和交互必须遵循统一的设计语言系统（Design Language System）；错误提示、加载状态、空状态和成功反馈必须使用一致的文案模板和视觉模式，禁止各组件自行发明提示方式；跨页面、跨平台的交互行为必须保持逻辑一致，同一操作在不同上下文中应产生可预期的结果。
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Why**: 不一致的体验会显著增加用户认知负担，降低产品专业感和用户信任度。
+
+**How to apply**: 在 /speckit.specify 阶段为每个功能定义用户体验验收标准；UI 审查必须独立于功能审查进行。
+
+### IV. 性能需求
+
+接口响应时间必须满足预定目标（如 P95 < 200ms，P99 < 500ms）；资源使用（CPU、内存、网络）必须被持续监控，异常增长必须触发告警；性能回归必须通过自动化基准测试拦截，任何导致关键路径延迟增加的变更必须附带优化方案或业务必要性说明；大数据量场景（如批量导入、大规模列表渲染）必须在上线前完成压力测试和容量评估。
+
+**Why**: 性能是用户体验的隐性基础。慢于预期的系统会直接转化为用户流失和业务损失。
+
+**How to apply**: 在 /speckit.plan 中明确标注性能目标和约束；每个功能迭代前运行基准测试并对比基线。
+
+### V. 文档与可维护性
+
+所有公共 API、配置项和关键业务逻辑必须配备中文文档；架构决策和复杂设计必须记录决策记录（ADR），说明选型理由和被否决的替代方案；代码应当自解释，仅当业务逻辑涉及隐式约束或非常规处理时才添加注释；项目规范、最佳实践和常见问题必须沉淀为可检索的知识库，避免口头传递。
+
+**Why**: 文档和知识沉淀是团队协作的放大器，能显著降低新成员上手成本和关键人员依赖风险。
+
+**How to apply**: 在 /speckit.plan 的输出中包含 quickstart.md 和架构文档；代码审查时检查文档同步性。
+
+## 附加约束
+
+- 技术栈选型必须优先考虑团队熟悉度和社区活跃度，引入新的编程语言或框架必须经过全体评审
+- 所有破坏性变更必须向后兼容至少一个版本周期，或提供完整的迁移路径和迁移工具
+- 安全相关的代码（认证、授权、数据加密）必须经过双人评审，禁止单人合并且必须附带安全测试
+- 敏感数据（用户隐私、业务核心数据）的采集、存储和传输必须符合数据保护法规要求
+
+## 开发工作流
+
+- 功能开发必须通过 /speckit.specify 明确需求范围，通过 /speckit.plan 制定技术方案，方可进入实现阶段
+- 代码合并前必须通过 CI 全部检查（构建、测试、静态分析、安全扫描）
+- 紧急修复必须通过 /speckit.git.feature 创建独立功能分支，禁止直接在主分支上提交
+- 每次迭代结束时必须运行 /speckit.checklist 验证交付物符合规范要求
+
+## 治理
+
+本宪章优先于所有其他开发实践和临时决策。任何修订必须：
+
+1. 以书面形式记录修改理由和影响范围
+2. 同步更新所有依赖模板（plan-template.md、spec-template.md、tasks-template.md 等）
+3. 执行版本号递增（遵循语义化版本规范：MAJOR 表示原则移除或重定义，MINOR 表示新增原则，PATCH 表示措辞澄清）
+
+合规性审查每季度执行一次，审查范围包括代码仓库、文档库和 CI 配置。审查结果必须形成书面报告并明确整改责任人与时限。
+
+**版本**: 1.0.0 | **生效日期**: 2026-04-18 | **最后修订**: 2026-04-18
